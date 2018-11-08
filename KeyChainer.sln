@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyChainer.UI", "KeyChainer.UI\KeyChainer.UI.csproj", "{3BCB4EC9-D003-4987-9F03-8CB44FCF3F68}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "KeyChainer.Core", "KeyChainer.Core\KeyChainer.Core.pyproj", "{4272421C-FF3C-403A-B046-B9451386B8C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BCB4EC9-D003-4987-9F03-8CB44FCF3F68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BCB4EC9-D003-4987-9F03-8CB44FCF3F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BCB4EC9-D003-4987-9F03-8CB44FCF3F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BCB4EC9-D003-4987-9F03-8CB44FCF3F68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4272421C-FF3C-403A-B046-B9451386B8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4272421C-FF3C-403A-B046-B9451386B8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56D7EA81-E34C-42E1-81E1-4B786079AB0D}
+	EndGlobalSection
+EndGlobal
