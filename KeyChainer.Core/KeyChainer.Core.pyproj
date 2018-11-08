@@ -21,7 +21,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="application.py" />
+    <Compile Include="exception_handler.py" />
+    <Compile Include="input_parser.py" />
+    <Compile Include="key_map.py" />
     <Compile Include="ui_spawner.py" />
+    <Compile Include="win_low_level_hook.py" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KeyChainer.UI\KeyChainer.UI.csproj">
