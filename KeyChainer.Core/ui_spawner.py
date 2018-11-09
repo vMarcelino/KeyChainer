@@ -20,18 +20,17 @@ import threading
 import time 
 
 class LogicThread(threading.Thread):
-    def __init__(self, vm):
-        threading.Thread.__init__(self)
-        
+    def __init__(self, vm, *args, **kwargs):
+        threading.Thread.__init__(self, *args, **kwargs)
         self.vm = vm
         self.daemon = True
         self._running = True
+        self.vm.RecordCommand = RelayCommand(Action(self.RecordCommand))
         
 
     def run(self):
         print(threading.currentThread().getName())
         print('THREAD START')
-        self.vm.RecordCommand = RelayCommand(Action(self.RecordCommand))
 
 
     def RecordCommand(self):
@@ -42,15 +41,31 @@ class LogicThread(threading.Thread):
         self._running = False
 
 
+class UIThread(threading.Thread):
+    def __init__(self, *args, **kwargs):
+        threading.Thread.__init__(self, *args, **kwargs)
+        self.daemon = True
+        self._running = True
+        self.application = None
+        self.mw = None
 
-mw = MainWindow()
-mw.DataContext = ApplicationViewModel()
-t = LogicThread(mw.DataContext)
-t.start()
 
-Application().Run(mw)
+    def run(self):
+        pythoncom.CoInitialize()
+        self.mw = MainWindow()
+        self.mw.DataContext = ApplicationViewModel()
+        self.t = LogicThread(self.mw.DataContext)
+        self.t.start()
+        self.application = Application()
+        self.mw.Hide()
+        self.application.Run(self.mw)
 
-t.stop()
+
+    def show_window(self):
+        self.mw.Show()
+
+    def close_window(self):
+        self.mw.Close()
 
 
 

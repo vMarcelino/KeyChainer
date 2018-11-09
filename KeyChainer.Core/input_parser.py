@@ -32,10 +32,14 @@ class InputParser:
         
     def on_key_down(self, key_name, is_special_key):
         print(key_name, end='', flush=True)
-        if key_name == 'F1':
+        if key_name == 'F12':
             return False
             
         self.keys_down.add(key_name)
+
+        if 'F1' in self.keys_down and 'LControlKey' in self.keys_down:
+            import ui_spawner
+            ui_spawner.show_window()
         
         return True
         

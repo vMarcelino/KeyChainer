@@ -11,7 +11,14 @@ class WinLowLevelHook:
         self.hook_id_mouse = None
         
         
-    def start(self):
+    def start(self, asynchronous=True):
+        if asynchronous:
+            print('async hook')
+            import threading
+            threading.Thread(target=self.start, kwargs={'asynchronous':False}).start()
+            return
+
+        print('starting hook')
         import win32con
         keyboard_event_types = {win32con.WM_KEYDOWN: 'key down',
                                win32con.WM_KEYUP: 'key up',

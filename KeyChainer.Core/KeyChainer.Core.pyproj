@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>4272421c-ff3c-403a-b046-b9451386b8c9</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ui_spawner.py</StartupFile>
+    <StartupFile>application.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
