@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 
 namespace KeyChainer.UI
@@ -14,22 +15,31 @@ namespace KeyChainer.UI
         public static Action<MainWindow> caller;
         public static MainWindow mw;
         public static ApplicationViewModel vm;
+        public static SynchronizationContext uiContext;
 
         [STAThread]
         public static void Open()
         {
-            caller = (c) => 
-            {
-                app = new Application();
-                app.Run(c);
-            };
-            mw = new MainWindow();
-            mw.DataContext = vm = new ApplicationViewModel() { Text = "vatata" };
-            result = caller.BeginInvoke(mw, null, null);
+            uiContext = SynchronizationContext.Current;
+            uiContext = new SynchronizationContext();
+
+
+            Console.Write("\tSync Context: ");
+            if (uiContext == null)
+                Console.WriteLine("None");
+            else
+                Console.WriteLine(uiContext);
+
+            Action<object> a = (o) => { };
+            uiContext.Post(new SendOrPostCallback(a), null);
+
+            //app = new Application();
+
         }
-        public static void Close()
+
+        public static void sync(SynchronizationContext c, Action<object> a)
         {
-            caller.EndInvoke(result);
+            c.Send(new SendOrPostCallback(a), null);
         }
     }
 }

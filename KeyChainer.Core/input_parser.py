@@ -1,6 +1,7 @@
 class InputParser:
-    def __init__(self):
+    def __init__(self, ui):
         self.keys_down=set()
+        self.ui = ui
     
     def process_keyboard_event(self, event):
         # print(event)
@@ -38,14 +39,13 @@ class InputParser:
         self.keys_down.add(key_name)
 
         if 'F1' in self.keys_down and 'LControlKey' in self.keys_down:
-            import ui_spawner
-            ui_spawner.show_window()
+            self.ui.show_window()
         
         return True
         
         
     def on_key_up(self, key_name):
-        if key_name == 'F1':
+        if key_name == 'F12':
             exit()
             
         try:
