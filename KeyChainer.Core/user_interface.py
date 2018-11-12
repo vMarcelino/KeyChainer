@@ -12,10 +12,13 @@ pythoncom.CoInitialize()
 import clr
 ref = clr.AddReference('KeyChainer.UI')
 from KeyChainer.UI import MainWindow, ApplicationViewModel, RelayCommand, AppInitializer
-from System import Action, Object
+from System import Action, Object, Array, String
 from System.Windows import Application
 from System.Threading import SynchronizationContext, SendOrPostCallback
 from System.Windows.Threading import DispatcherSynchronizationContext
+from System.Collections.ObjectModel import ObservableCollection
+
+import command
 
 from functools import wraps
 
@@ -31,6 +34,13 @@ class LogicThread(threading.Thread):
         self.daemon = True
         self._running = True
         self.vm.RecordCommand = RelayCommand(Action(self.RecordCommand))
+        self.vm.SaveCommand = RelayCommand(Action(self.SaveCommand))
+        self.vm.SelectionChanged = Action[int](self.SelectionChanged)
+        self.update_list()
+
+        # generate random string for space scaping
+        import random, string
+        self.space_escaping = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
         
 
     def run(self):
@@ -39,7 +49,33 @@ class LogicThread(threading.Thread):
 
 
     def RecordCommand(self):
-        self.vm.IsRecording = not self.vm.IsRecording
+        if self.vm.IsRecording:
+            self.vm.IsRecording = False
+        else:
+            self.vm.IsRecording = True
+            self.vm.RecordedKeychain = ""
+
+
+    def SaveCommand(self):
+        del parent.commands[self.vm.SelectedIndex]
+        parent.commands.append(command.Command(self.vm.RecordedKeychain, self.vm.ProgramPath, [x.replace(self.space_escaping, ' ') for x in self.vm.Arguments.replace('\ ', self.space_escaping).split(' ')] ) )
+        parent.reader.dump_commands(parent.commands)
+        self.update_list()
+
+
+    def SelectionChanged(self, index):
+        cmd = parent.commands[index]
+        print(cmd)
+        self.vm.RecordedKeychain = cmd.activation_chain
+        self.vm.ProgramPath = cmd.program.program_path
+        self.vm.Arguments = ' '.join([x.replace(' ', r'\ ') for x in cmd.program.arguments])
+
+
+    def update_list(self):
+        self.vm.CommandStrings = ObservableCollection[String]()
+        for c in parent.commands:
+            arg = ' '.join([x.replace(' ', r'\ ') for x in c.program.arguments])
+            self.vm.CommandStrings.Add(f"{c.activation_chain} -> {c.program.program_path} {arg}")
 
 
     def stop(self):
@@ -83,8 +119,6 @@ class UIThread(threading.Thread):
 
 
 
-print('classes defined')
-
 def run_on_ui_thread(func):
     from inspect import signature
     arg_count = len(signature(func).parameters)
@@ -107,7 +141,6 @@ def run_on_ui_thread(func):
         raise Exception('Must have at most one argument')
 
 
-
 @run_on_ui_thread
 def hide_window():
     main_window.Hide()
@@ -123,16 +156,26 @@ def close_window():
     main_window.Close()
 
 
+def on_key_down(key_name):
+    if logic_thread.vm.IsRecording:
+        logic_thread.vm.RecordedKeychain += key_name
+        print('Recorded Keychain:', logic_thread.vm.RecordedKeychain)
+
+def initialize(_parent):
+    global parent, ui_thread
+    parent = _parent
+    ui_thread = UIThread()
+    ui_thread.start()
+    print('done')
+
+
+parent = None
 context = None
 _running = False
 logic_thread = None
 main_window = None
 application = None
-print('creating thread')
-ui_thread = UIThread()
-print('starting thread')
-ui_thread.start()
-print('done')
+ui_thread = None
 
 
 

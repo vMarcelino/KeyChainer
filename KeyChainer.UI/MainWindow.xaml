@@ -3,30 +3,65 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfDllTest"
+        xmlns:local="clr-namespace:KeyChainer.UI"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
     <Grid Background="#1b1c1e">
-        <Border Padding="20" Background="#0b0c0c" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="10">
-            <StackPanel>
-                <TextBlock Text="Add new keychain" Foreground="Gray" Margin="5" HorizontalAlignment="Center"/>
-                <Button Width="120" Height="30" Command="{Binding RecordCommand}" Margin="5">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Content" Value="Record Keychain"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRecording}" Value="true">
-                                    <Setter Property="Content" Value="Stop recording"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsRecording}" Value="false">
-                                    <Setter Property="Content" Value="Record Keychain"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBlock Text="{Binding RecordedKeychain, StringFormat='Recorded keychain: {0}', FallbackValue='Recorded keychain: '}" Foreground="Gray" />
-            </StackPanel>
-        </Border>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Padding="20" Background="#0b0c0c" CornerRadius="10" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Add new keychain" HorizontalAlignment="Center"/>
+                    <Button Width="120" Height="30" Command="{Binding RecordCommand}" Margin="5">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="Record Keychain"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRecording}" Value="true">
+                                        <Setter Property="Content" Value="Stop recording"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRecording}" Value="false">
+                                        <Setter Property="Content" Value="Record Keychain"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Text="{Binding RecordedKeychain, StringFormat='Recorded keychain: {0}', FallbackValue='Recorded keychain: '}" />
+
+                    <Border Background="Transparent" Height="10"/>
+                    <TextBlock Text="Program path:"/>
+                    <TextBox Text="{Binding ProgramPath}"/>
+
+                    <Border Background="Transparent" Height="10"/>
+                    <TextBlock Text="Program arguments:"/>
+                    <TextBox Text="{Binding Arguments}"/>
+
+                    <Border Background="Transparent" Height="20"/>
+                    <Button Content="Save" Command="{Binding SaveCommand}" Height="25"/>
+
+
+                </StackPanel>
+            </Border>
+
+            <Border Padding="20" Background="#0b0c0c" CornerRadius="10" Margin="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ListView ItemsSource="{Binding CommandStrings}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" Grid.Row="0"/>
+                    </ScrollViewer>
+                    <Button Content="Add new" Command="{Binding AddCommand}" Height="25" Width="100" HorizontalAlignment="Center" Grid.Row="1"/>
+                </Grid>
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>
