@@ -7,17 +7,32 @@ class Application:
         while not user_interface._running:
            pass
 
-        user_interface.show_window()
+        #user_interface.show_window()
 
+
+        # loads commands
+        import command
+        self.reader = command.CommandReader('Keychains.txt')
+        try:
+            self.commands = self.reader.read_commands()
+        except:
+            self.commands = [command.Command('NP', 'notepad.exe', []), command.Command('PS', 'powershell', [])]
+            self.reader.dump_commands(self.commands)
+
+
+        # uses key_down set in here, main application class
         self.keys_down = set()
+
+        import input_processor
+        self.processor = input_processor.InputProcessor(commands=self.commands, keys_down=self.keys_down)
 
         # import parser to pass on to keyboard hook
         import input_parser
-        parser = input_parser.InputParser(keys_down = self.keys_down)
+        self.parser = input_parser.InputParser(keys_down = self.keys_down, key_up_callback=self.processor.on_key_up, key_down_callback=self.processor.on_key_down)
 
         import win_low_level_hook
-        keyboard_hook = win_low_level_hook.WinLowLevelHook(parser.process_keyboard_event, mouse_hook_callback)
-        keyboard_hook.start()
+        self.keyboard_hook = win_low_level_hook.WinLowLevelHook(self.parser.process_keyboard_event, mouse_hook_callback)
+        self.keyboard_hook.start()
 
 
 
