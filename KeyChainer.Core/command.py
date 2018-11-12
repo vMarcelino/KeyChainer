@@ -11,10 +11,12 @@ class Command:
 
 
 class Program:
-    def __init__(self, program_path, arguments):
+    def __init__(self, program_path, arguments, shell=False):
         self.program_path = program_path
         self.arguments = arguments
+        self.shell = shell
 
 
-    def execute():
-        raise NotImplementedError()
+    def execute(self):
+        import subprocess
+        subprocess.call([self.program_path] + self.arguments, shell=self.shell)
