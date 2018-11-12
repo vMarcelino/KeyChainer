@@ -24,7 +24,7 @@ class InputProcessor:
             for command in self.commands:
                 if comamnd.activation_chain.startswith(self.key_chain):
                     if command.activation_chain == self.key_chain:
-                        command.activate()
+                        command.execute()
                     elif len(command.activation_chain) > self.key_chain:
                         is_valid = True
 
