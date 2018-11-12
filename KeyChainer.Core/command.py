@@ -4,10 +4,15 @@ class Command:
     def __init__(self, activation_chain, program_path, arguments):
         self.activation_chain = activation_chain
         self.program = Program(program_path, arguments)
+        self.serialized = {'activation_chain':activation_chain, 'program_path':program_path, 'arguments':arguments}
 
 
-    def execute():
+    def execute(self):
         self.program.execute()
+
+
+    def serialize(self):
+        return self.serialized
 
 
 
@@ -17,8 +22,11 @@ class CommandReader:
 
 
     def read_commands(self, filename=None):
-        if filename is None and self.filename is None:
-            raise Exception('A filename must be supplied')
+        if filename is None:
+            if self.filename is None:
+                raise Exception('A filename must be supplied')
+
+            filename = self.filename
 
         import json
         cmds = []
@@ -31,11 +39,15 @@ class CommandReader:
 
 
     def dump_commands(self, commands, filename=None):
-        if filename is None and self.filename is None:
-            raise Exception('A filename must be supplied')
+        if filename is None:
+            if self.filename is None:
+                raise Exception('A filename must be supplied')
+
+            filename = self.filename
 
         import json
-        srlz = json.dumps([c.__dict__ for c in commands], IndentationError=4)
+        dtl = [c.serialize() for c in commands]
+        srlz = json.dumps(dtl, indent=4)
         with open(filename, 'w+') as f:
             f.write(srlz)
 
@@ -49,4 +61,4 @@ class Program:
 
     def execute(self):
         import subprocess
-        subprocess.call([self.program_path] + self.arguments, shell=self.shell)
+        subprocess.Popen([self.program_path] + self.arguments, shell=self.shell, creationflags=subprocess.CREATE_NEW_CONSOLE)
