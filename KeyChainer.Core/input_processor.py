@@ -1,11 +1,14 @@
 class InputProcessor:
     """process keypress inputs such as key_up and key_down"""
 
-    def __init__(self, commands, keys_down=None):
+    def __init__(self, commands, keys_down=None, key_down_handlers = [], key_up_handlers = []):
         self.keys_down = keys_down
         self.key_chain = ""
         self.commands = commands
         self.command_input_mode=False
+        self.key_down_handlers = key_down_handlers
+        self.key_up_handlers = key_up_handlers
+
         if keys_down is None:
             self.outside_keys_down = False
             self.keys_down = set()
@@ -19,6 +22,9 @@ class InputProcessor:
     def on_key_down(self, key_name):
         if not self.outside_keys_down:
             self.keys_down.add(key_name)
+            
+        for handler in self.key_down_handlers:
+            handler(key_name)
 
         if set(['F1' ,'LControlKey']) == self.keys_down:
             self.allow_release = self.keys_down.copy()
@@ -55,6 +61,9 @@ class InputProcessor:
             except Exception as ex:
                 import exception_handler
                 exception_handler.print_traceback(ex)
+
+        for handler in self.key_up_handlers:
+            handler(key_name)
 
         if key_name in self.allow_release:
             self.allow_release.remove(key_name)
