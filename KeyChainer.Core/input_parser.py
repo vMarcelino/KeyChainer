@@ -2,6 +2,8 @@ class InputParser:
     def __init__(self, key_down_callback=None, key_up_callback=None, keys_down=None):
         if keys_down is None:
             self.keys_down = set()
+        else:
+            self.keys_down = keys_down
             
         self.key_down_callback = key_down_callback
         self.key_up_callback = key_up_callback
@@ -41,15 +43,15 @@ class InputParser:
             
         self.keys_down.add(key_name)
 
-        if 'F1' in self.keys_down and 'LControlKey' in self.keys_down:
+        if 'F2' in self.keys_down and 'LControlKey' in self.keys_down:
             import user_interface
             if user_interface.main_window.IsVisible:
                 user_interface.hide_window()
             else:
                 user_interface.show_window()
 
-        if key_down_callback is not None:
-            return key_down_callback(key_name)
+        if self.key_down_callback is not None:
+            return self.key_down_callback(key_name)
         
         return True
         
@@ -67,6 +69,6 @@ class InputParser:
             exception_handler.print_traceback(ex)
         
         if self.key_up_callback is not None:
-            return self.key_up_callback
+            return self.key_up_callback(key_name)
 
         return True
