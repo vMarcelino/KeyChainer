@@ -6,62 +6,86 @@
         xmlns:local="clr-namespace:KeyChainer.UI"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="Gray"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
+        <ResourceDictionary Source="pack://application:,,,/KeyChainer.UI;component/MaterialDictionary.xaml"/>
     </Window.Resources>
+
+    <!--Background="#1b1c1e"-->
     <Grid Background="#1b1c1e">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Border Padding="20" Background="#0b0c0c" CornerRadius="10" Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Add new keychain" HorizontalAlignment="Center"/>
-                    <Button Width="120" Height="30" Command="{Binding RecordCommand}" Margin="5">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Content" Value="Record Keychain"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsRecording}" Value="true">
-                                        <Setter Property="Content" Value="Stop recording"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsRecording}" Value="false">
-                                        <Setter Property="Content" Value="Record Keychain"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <TextBlock Text="{Binding RecordedKeychain, StringFormat='Recorded keychain: {0}', FallbackValue='Recorded keychain: '}" />
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="Gray"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+        </Grid.Resources>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!--Background="#0b0c0c"-->
+                <materialDesign:Card Background="#0b0c0c" Padding="20" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="Edit keychain" HorizontalAlignment="Center"/>
+                        <Button Command="{Binding RecordCommand}" Margin="5">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                    <Setter Property="Content" Value="Record Keychain"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsRecording}" Value="true">
+                                            <Setter Property="Content" Value="Stop recording"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsRecording}" Value="false">
+                                            <Setter Property="Content" Value="Record Keychain"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <TextBlock Text="{Binding RecordedKeychain, StringFormat='Recorded keychain: {0}', FallbackValue='Recorded keychain: '}" />
 
-                    <Border Background="Transparent" Height="10"/>
-                    <TextBlock Text="Program path:"/>
-                    <TextBox Text="{Binding ProgramPath}"/>
+                        <Border Background="Transparent" Height="10"/>
+                        <TextBlock Text="Program path:"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding ProgramPath}" Grid.Column="0" Margin="5"/>
+                            <Button Content="Browse" Command="{Binding BrowseCommand}" Grid.Column="1" Margin="5"/>
+                        </Grid>
 
-                    <Border Background="Transparent" Height="10"/>
-                    <TextBlock Text="Program arguments:"/>
-                    <TextBox Text="{Binding Arguments}"/>
+                        <Border Background="Transparent" Height="10"/>
+                        <TextBlock Text="Program arguments:"/>
+                        <TextBox Text="{Binding Arguments}"/>
 
-                    <Border Background="Transparent" Height="20"/>
-                    <Button Content="Save" Command="{Binding SaveCommand}" Height="25"/>
+                        <Border Background="Transparent" Height="20"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Content="Save" Command="{Binding SaveCommand}" Height="25" Width="75" Margin="5"/>
+                            <Button Content="Delete" Command="{Binding DeleteCommand}" Height="25" Width="75" Margin="5"/>
+                        </StackPanel>
 
 
-                </StackPanel>
-            </Border>
+                    </StackPanel>
+                </materialDesign:Card>
 
-            <Border Padding="20" Background="#0b0c0c" CornerRadius="10" Margin="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ListView ItemsSource="{Binding CommandStrings}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" Grid.Row="0"/>
-                    </ScrollViewer>
-                    <Button Content="Add new" Command="{Binding AddCommand}" Height="25" Width="100" HorizontalAlignment="Center" Grid.Row="1"/>
-                </Grid>
-            </Border>
-        </StackPanel>
+                <materialDesign:Card Background="#0b0c0c" Padding="20" Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListView ItemsSource="{Binding CommandStrings}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" Grid.Row="0"/>
+                        </ScrollViewer>
+                        <Button Content="Add new" Command="{Binding AddCommand}" HorizontalAlignment="Center" Grid.Row="1"/>
+                    </Grid>
+                </materialDesign:Card>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

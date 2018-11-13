@@ -41,6 +41,12 @@ namespace KeyChainer.UI
 
         public ICommand SaveCommand { get; set; }
 
+        public ICommand AddCommand { get; set; }
+
+        public ICommand BrowseCommand { get; set; }
+
+        public ICommand DeleteCommand { get; set; }
+
         public bool IsRecording { get; set; }
     }
 }

@@ -11,6 +11,8 @@ pythoncom.CoInitialize()
 
 import clr
 ref = clr.AddReference('KeyChainer.UI')
+ref2 = clr.AddReference('MaterialDesignThemes.Wpf')
+ref3 = clr.AddReference('MaterialDesignColors')
 from KeyChainer.UI import MainWindow, ApplicationViewModel, RelayCommand, AppInitializer
 from System import Action, Object, Array, String
 from System.Windows import Application
@@ -35,6 +37,9 @@ class LogicThread(threading.Thread):
         self._running = True
         self.vm.RecordCommand = RelayCommand(Action(self.RecordCommand))
         self.vm.SaveCommand = RelayCommand(Action(self.SaveCommand))
+        self.vm.AddCommand = RelayCommand(Action(self.AddCommand))
+        self.vm.BrowseCommand = RelayCommand(Action(self.BrowseCommand))
+        self.vm.DeleteCommand = RelayCommand(Action(self.DeleteCommand))
         self.vm.SelectionChanged = Action[int](self.SelectionChanged)
         self.update_list()
 
@@ -57,10 +62,30 @@ class LogicThread(threading.Thread):
 
 
     def SaveCommand(self):
-        del parent.commands[self.vm.SelectedIndex]
+        parent.commands[self.vm.SelectedIndex] = command.Command(self.vm.RecordedKeychain, self.vm.ProgramPath, [x.replace(self.space_escaping, ' ') for x in self.vm.Arguments.replace('\ ', self.space_escaping).split(' ')] ) 
+        parent.reader.dump_commands(parent.commands)
+        self.update_list()
+
+
+    def AddCommand(self):
         parent.commands.append(command.Command(self.vm.RecordedKeychain, self.vm.ProgramPath, [x.replace(self.space_escaping, ' ') for x in self.vm.Arguments.replace('\ ', self.space_escaping).split(' ')] ) )
         parent.reader.dump_commands(parent.commands)
         self.update_list()
+
+
+    def DeleteCommand(self):
+        del parent.commands[self.vm.SelectedIndex]
+        self.update_list()
+
+
+    def BrowseCommand(self):
+        import tkinter as tk
+        from tkinter import filedialog
+        root = tk.Tk()
+        root.withdraw()
+        file_path = filedialog.askopenfilename()
+        print(file_path)
+        self.vm.ProgramPath = file_path
 
 
     def SelectionChanged(self, index):
